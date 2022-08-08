@@ -5,6 +5,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { UserModule } from './user/user.module';
+import { GameModule } from './game/game.module';
 
 @Module({
   imports: [
@@ -22,6 +24,8 @@ import { AppService } from './app.service';
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
     }),
+    UserModule,
+    GameModule,
   ],
   controllers: [AppController],
   providers: [AppService],
