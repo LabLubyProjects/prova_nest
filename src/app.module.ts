@@ -9,6 +9,7 @@ import { UserModule } from './user/user.module';
 import { GameModule } from './game/game.module';
 import { BetModule } from './bet/bet.module';
 import { CartModule } from './cart/cart.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -25,11 +26,13 @@ import { CartModule } from './cart/cart.module';
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+      context: ({ req }) => ({ req }),
     }),
     UserModule,
     GameModule,
     BetModule,
     CartModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
