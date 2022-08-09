@@ -17,12 +17,6 @@ export class Bet {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  // @Column()
-  // user_id: string;
-
-  // @Column()
-  // game_id: string;
-
   @Column()
   numbers: string;
 

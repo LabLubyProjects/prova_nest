@@ -1,5 +1,6 @@
-import { ObjectType, Field, ID } from '@nestjs/graphql';
+import { ObjectType, Field, ID, HideField } from '@nestjs/graphql';
 import { Bet } from 'src/bet/entities/bet.entity';
+import { hashPassword } from 'src/helpers/crypto';
 import {
   Column,
   CreateDateColumn,
@@ -28,13 +29,18 @@ export class User {
   @Column()
   email: string;
 
-  @Column()
+  @Column({
+    transformer: hashPassword,
+  })
+  @HideField()
   password: string;
 
   @Column()
+  @HideField()
   password_recovery_token: string;
 
   @Column()
+  @HideField()
   password_recovery_token_expiration: string;
 
   @CreateDateColumn()
