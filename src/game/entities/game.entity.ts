@@ -1,8 +1,10 @@
 import { ObjectType, Field, Int, ID } from '@nestjs/graphql';
+import { Bet } from 'src/bet/entities/bet.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -37,4 +39,7 @@ export class Game {
 
   @UpdateDateColumn()
   updated_at: Date;
+
+  @OneToMany(() => Bet, (bet) => bet.game)
+  bets: Bet[];
 }
