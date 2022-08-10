@@ -3,7 +3,7 @@ import { AuthService } from './auth.service';
 import { AuthInput } from './dto/auth.input';
 import { AuthType } from './dto/auth.type';
 
-@Resolver()
+@Resolver('Auth')
 export class AuthResolver {
   constructor(private authService: AuthService) {}
 
