@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { RoleService } from 'src/role/role.service';
 import { Repository } from 'typeorm';
@@ -46,7 +50,11 @@ export class UserService {
     return this.userRepository.save({ ...userToUpdate, ...updateUserInput });
   }
 
-  // remove(id: number) {
-  //   return `This action removes a #${id} user`;
-  // }
+  async remove(id: string): Promise<User> {
+    const userToDelete = await this.findOne(id);
+    const isDeleted = await this.userRepository.delete(userToDelete);
+    if (!isDeleted)
+      throw new InternalServerErrorException('Could not delete user');
+    return userToDelete;
+  }
 }

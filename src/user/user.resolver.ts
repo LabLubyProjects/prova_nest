@@ -44,8 +44,10 @@ export class UserResolver {
     return response;
   }
 
-  // @Mutation(() => User)
-  // removeUser(@Args('id', { type: () => Int }) id: number) {
-  //   return this.userService.remove(id);
-  // }
+  @Mutation(() => User)
+  async removeUser(
+    @Args('id', { type: () => String }) id: string,
+  ): Promise<User> {
+    return this.userService.remove(id);
+  }
 }

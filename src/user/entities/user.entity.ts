@@ -49,12 +49,13 @@ export class User {
   @UpdateDateColumn()
   updated_at: Date;
 
-  @ManyToMany(() => Role, (role) => role.users, {
-    cascade: true,
-  })
+  @ManyToMany(() => Role, (role) => role.users)
   @JoinTable()
   roles: Role[];
 
-  @OneToMany(() => Bet, (bet) => bet.user)
+  @OneToMany(() => Bet, (bet) => bet.user, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   bets: Bet[];
 }
