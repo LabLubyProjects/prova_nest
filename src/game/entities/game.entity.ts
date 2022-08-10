@@ -16,7 +16,7 @@ export class Game {
   @Field(() => ID)
   id: string;
 
-  @Column()
+  @Column({ unique: true })
   type: string;
 
   @Column()

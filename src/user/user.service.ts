@@ -2,6 +2,7 @@ import {
   Injectable,
   InternalServerErrorException,
   NotFoundException,
+  UnprocessableEntityException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { RoleService } from 'src/role/role.service';
@@ -18,6 +19,16 @@ export class UserService {
   ) {}
 
   async create(createUserInput: CreateUserInput): Promise<User> {
+    if (
+      (await this.userRepository.findOne({
+        where: { cpf: createUserInput.cpf },
+      })) ||
+      (await this.userRepository.findOne({
+        where: { email: createUserInput.email },
+      }))
+    )
+      throw new UnprocessableEntityException('User already exists');
+
     const playerRole = await this.roleService.findByName('player');
     const newUser = this.userRepository.create(createUserInput);
     newUser.roles.push(playerRole);
