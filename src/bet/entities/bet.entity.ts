@@ -20,6 +20,12 @@ export class Bet {
   @Column()
   numbers: string;
 
+  @Column()
+  user_id: string;
+
+  @Column()
+  game_id: string;
+
   @CreateDateColumn()
   created_at: Date;
 

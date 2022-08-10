@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { RoleService } from 'src/role/role.service';
 import { Repository } from 'typeorm';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
@@ -9,10 +10,19 @@ import { User } from './entities/user.entity';
 export class UserService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
+    private roleService: RoleService,
   ) {}
 
-  create(createUserInput: CreateUserInput) {
-    return 'This action adds a new user';
+  async create(createUserInput: CreateUserInput): Promise<User> {
+    const playerRole = await this.roleService.findByName('player');
+    const newUser = this.userRepository.create(createUserInput);
+    newUser.roles.push(playerRole);
+    await this.userRepository.manager.transaction(
+      async (transactionalEntityManager) => {
+        await transactionalEntityManager.save(newUser);
+      },
+    );
+    return newUser;
   }
 
   findAll() {
@@ -29,11 +39,11 @@ export class UserService {
     return user;
   }
 
-  update(id: number, updateUserInput: UpdateUserInput) {
-    return `This action updates a #${id} user`;
-  }
+  // update(id: number, updateUserInput: UpdateUserInput) {
+  //   return `This action updates a #${id} user`;
+  // }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
-  }
+  // remove(id: number) {
+  //   return `This action removes a #${id} user`;
+  // }
 }
