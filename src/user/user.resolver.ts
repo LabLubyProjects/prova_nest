@@ -33,6 +33,7 @@ export class UserResolver {
     return this.userService.findOne(id);
   }
 
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => User)
   async updateUser(
     @Args('updateUserInput') updateUserInput: UpdateUserInput,
@@ -44,10 +45,21 @@ export class UserResolver {
     return response;
   }
 
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => User)
   async removeUser(
     @Args('id', { type: () => String }) id: string,
   ): Promise<User> {
     return this.userService.remove(id);
+  }
+
+  @Roles('admin')
+  @UseGuards(GqlAuthGuard, RolesGuard)
+  @Mutation(() => User)
+  async grantRoles(
+    @Args('id', { type: () => String }) id: string,
+    @Args('roles', { type: () => [String] }) roles: string[],
+  ): Promise<User> {
+    return this.userService.grantRoles(id, roles);
   }
 }

@@ -49,7 +49,9 @@ export class User {
   @UpdateDateColumn()
   updated_at: Date;
 
-  @ManyToMany(() => Role, (role) => role.users)
+  @ManyToMany(() => Role, (role) => role.users, {
+    eager: true,
+  })
   @JoinTable()
   roles: Role[];
 
@@ -58,4 +60,8 @@ export class User {
     onUpdate: 'CASCADE',
   })
   bets: Bet[];
+
+  isAdmin(): boolean {
+    return this.roles.some((role) => role.name === 'admin');
+  }
 }

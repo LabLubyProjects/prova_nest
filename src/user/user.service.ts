@@ -52,9 +52,27 @@ export class UserService {
 
   async remove(id: string): Promise<User> {
     const userToDelete = await this.findOne(id);
-    const isDeleted = await this.userRepository.delete(userToDelete);
+    const isDeleted = await this.userRepository.delete(userToDelete.id);
     if (!isDeleted)
       throw new InternalServerErrorException('Could not delete user');
     return userToDelete;
+  }
+
+  async grantRoles(id: string, roles: string[]): Promise<User> {
+    const userToGrant = await this.findOne(id);
+    await Promise.all(
+      roles.map(async (role) => {
+        if (!userToGrant.roles.some((userRole) => userRole.name === role)) {
+          const newUserRole = await this.roleService.findByName(role);
+          userToGrant.roles.push(newUserRole);
+        }
+      }),
+    );
+    await this.userRepository.manager.transaction(
+      async (transactionalEntityManager) => {
+        await transactionalEntityManager.save(userToGrant);
+      },
+    );
+    return this.findOne(id);
   }
 }
