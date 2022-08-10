@@ -37,11 +37,11 @@ export class User {
 
   @Column()
   @HideField()
-  password_recovery_token: string;
+  password_recovery_token?: string;
 
   @Column()
   @HideField()
-  password_recovery_token_expiration: string;
+  password_recovery_token_expiration?: Date;
 
   @CreateDateColumn()
   created_at: Date;
