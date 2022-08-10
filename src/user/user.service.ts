@@ -41,9 +41,10 @@ export class UserService {
     return user;
   }
 
-  // update(id: number, updateUserInput: UpdateUserInput) {
-  //   return `This action updates a #${id} user`;
-  // }
+  async update(id: string, updateUserInput: UpdateUserInput): Promise<User> {
+    const userToUpdate = await this.findOne(id);
+    return this.userRepository.save({ ...userToUpdate, ...updateUserInput });
+  }
 
   // remove(id: number) {
   //   return `This action removes a #${id} user`;
