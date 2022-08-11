@@ -44,6 +44,14 @@ export class UserService {
     return `This action returns all user`;
   }
 
+  async findAllWithBets(): Promise<User[]> {
+    return this.userRepository.find({
+      relations: {
+        bets: true,
+      },
+    });
+  }
+
   async findOne(id: string): Promise<User> {
     const user = await this.userRepository.findOneBy({ id: id });
     if (!user) throw new NotFoundException('User not found');
