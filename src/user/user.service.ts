@@ -41,13 +41,26 @@ export class UserService {
   }
 
   findAll() {
-    return `This action returns all user`;
+    return [];
   }
 
   async findAllWithBets(): Promise<User[]> {
     return this.userRepository.find({
       relations: {
         bets: true,
+      },
+    });
+  }
+
+  async findAllWithSpecifiedRole(role: string): Promise<User[]> {
+    return this.userRepository.find({
+      relations: {
+        roles: true,
+      },
+      where: {
+        roles: {
+          name: role,
+        },
       },
     });
   }

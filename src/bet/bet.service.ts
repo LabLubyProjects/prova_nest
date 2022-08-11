@@ -6,7 +6,9 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { CartService } from 'src/cart/cart.service';
 import { GameService } from 'src/game/game.service';
+import { produce } from 'src/messaging/kafka';
 import { User } from 'src/user/entities/user.entity';
+import { UserService } from 'src/user/user.service';
 import { Repository } from 'typeorm';
 import { CreateBetInput } from './dto/create-bet.input';
 import { Bet } from './entities/bet.entity';
@@ -17,6 +19,7 @@ export class BetService {
     @InjectRepository(Bet) private readonly betsRepository: Repository<Bet>,
     private readonly gameService: GameService,
     private readonly cartService: CartService,
+    private readonly userService: UserService,
   ) {}
 
   async findAll(): Promise<Bet[]> {
@@ -79,25 +82,11 @@ export class BetService {
       }),
     );
 
-    //Emails and kafka part
-    // try {
-    //   await produce(auth.user!, 'new-bet');
-    //   const allAdmins = await User.query().preload('roles');
-    //   allAdmins.forEach(async (admin) => {
-    //     const adminJSON = admin.serialize();
-    //     if (adminJSON.roles.some((role) => role.name === 'admin'))
-    //       await produce(
-    //         { ...adminJSON, playerName: auth.user!.name },
-    //         'new-bet-admin-report',
-    //       );
-    //   });
-    //   //await sendEmail(auth.user!, 'email/new_bet', 'Congratulations for your new bet!')
-    // } catch (error) {
-    //   await transaction.rollback();
-    //   return response.badRequest({
-    //     statusCode: 400,
-    //     message: 'Error sending new bets email',
-    //   });
-    // }
+    await produce(user, 'new-bet');
+    const allAdmins = await this.userService.findAllWithSpecifiedRole('admin');
+
+    allAdmins.forEach((admin) => {
+      produce({ ...admin, playerName: user.name }, 'new-bet-admin-report');
+    });
   }
 }

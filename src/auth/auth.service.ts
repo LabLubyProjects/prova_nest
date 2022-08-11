@@ -14,6 +14,7 @@ import { DateTime } from 'luxon';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ResetInput } from './dto/reset.input';
+import { produce } from 'src/messaging/kafka';
 
 @Injectable()
 export class AuthService {
@@ -46,7 +47,13 @@ export class AuthService {
     user.password_recovery_token = token;
     user.password_recovery_token_expiration = tokenExpiration;
     await this.userRepository.save(user);
-    //send email using microservice
+    await produce(
+      {
+        ...user,
+        passwordRecoverToken: user.password_recovery_token,
+      },
+      'forgot-password',
+    );
   }
 
   public async resetPassword(data: ResetInput): Promise<void> {
