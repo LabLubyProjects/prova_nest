@@ -1,5 +1,9 @@
-import { CreateCartInput } from './create-cart.input';
-import { InputType, PartialType } from '@nestjs/graphql';
+import { InputType } from '@nestjs/graphql';
+import { IsNumber, IsPositive } from 'class-validator';
 
 @InputType()
-export class UpdateCartInput extends PartialType(CreateCartInput) {}
+export class UpdateCartInput {
+  @IsNumber()
+  @IsPositive()
+  minCartValue: number;
+}

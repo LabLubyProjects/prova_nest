@@ -7,16 +7,15 @@ import { UseGuards } from '@nestjs/common';
 import { GqlAuthGuard } from 'src/auth/guards/auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { Roles } from 'src/auth/decorators/roles.decorator';
+import { SelfUserGuard } from 'src/auth/guards/self-user.guard';
 
 @Resolver(() => User)
 export class UserResolver {
   constructor(private readonly userService: UserService) {}
 
   @Mutation(() => User)
-  async createUser(
-    @Args('createUserInput') createUserInput: CreateUserInput,
-  ): Promise<User> {
-    const response = await this.userService.create(createUserInput);
+  async createUser(@Args('data') data: CreateUserInput): Promise<User> {
+    const response = await this.userService.create(data);
     return response;
   }
 
@@ -33,19 +32,14 @@ export class UserResolver {
     return this.userService.findOne(id);
   }
 
-  @UseGuards(GqlAuthGuard)
+  @UseGuards(GqlAuthGuard, SelfUserGuard)
   @Mutation(() => User)
-  async updateUser(
-    @Args('updateUserInput') updateUserInput: UpdateUserInput,
-  ): Promise<User> {
-    const response = await this.userService.update(
-      updateUserInput.id,
-      updateUserInput,
-    );
+  async updateUser(@Args('data') data: UpdateUserInput): Promise<User> {
+    const response = await this.userService.update(data.id, data);
     return response;
   }
 
-  @UseGuards(GqlAuthGuard)
+  @UseGuards(GqlAuthGuard, SelfUserGuard)
   @Mutation(() => User)
   async removeUser(
     @Args('id', { type: () => String }) id: string,

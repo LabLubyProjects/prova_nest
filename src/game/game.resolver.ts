@@ -15,10 +15,8 @@ export class GameResolver {
   @Roles('admin')
   @UseGuards(GqlAuthGuard, RolesGuard)
   @Mutation(() => Game)
-  async createGame(
-    @Args('createGameInput') createGameInput: CreateGameInput,
-  ): Promise<Game> {
-    const response = await this.gameService.create(createGameInput);
+  async createGame(@Args('data') data: CreateGameInput): Promise<Game> {
+    const response = await this.gameService.create(data);
     return response;
   }
 
@@ -37,8 +35,8 @@ export class GameResolver {
   @Roles('admin')
   @UseGuards(GqlAuthGuard, RolesGuard)
   @Mutation(() => Game)
-  updateGame(@Args('updateGameInput') updateGameInput: UpdateGameInput) {
-    return this.gameService.update(updateGameInput.id, updateGameInput);
+  updateGame(@Args('data') data: UpdateGameInput) {
+    return this.gameService.update(data.id, data);
   }
 
   @Roles('admin')
