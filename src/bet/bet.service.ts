@@ -34,10 +34,9 @@ export class BetService {
 
   async createBet(createBetInput: CreateBetInput, user: User): Promise<void> {
     const { bets } = createBetInput;
-
     let totalCartValue = 0;
     for (const bet of bets) {
-      const currentGameAnalyzed = await this.gameService.findOne(bet.game_id);
+      const currentGameAnalyzed = await this.gameService.findOne(bet.gameId);
       const arrayOfBetNumbers = bet.numbers.split(',');
 
       if (arrayOfBetNumbers.length !== new Set(arrayOfBetNumbers).size)
@@ -71,7 +70,7 @@ export class BetService {
         await this.betsRepository.manager.transaction(
           async (transactionalEntityManager) => {
             const newBet = transactionalEntityManager.create(Bet, {
-              game_id: bet.game_id,
+              game_id: bet.gameId,
               user_id: user.id,
               numbers: bet.numbers,
             });

@@ -31,7 +31,8 @@ export class UserService {
 
     const playerRole = await this.roleService.findByName('player');
     const newUser = this.userRepository.create(createUserInput);
-    newUser.roles.push(playerRole);
+    newUser.roles = [playerRole];
+
     await this.userRepository.manager.transaction(
       async (transactionalEntityManager) => {
         await transactionalEntityManager.save(newUser);
@@ -40,8 +41,8 @@ export class UserService {
     return newUser;
   }
 
-  findAll() {
-    return [];
+  findAll(): Promise<User[]> {
+    return this.userRepository.find();
   }
 
   async findAllWithBets(): Promise<User[]> {

@@ -7,19 +7,25 @@ import { User } from 'src/user/entities/user.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './jwt.strategy';
 import { RolesGuard } from './guards/roles.guard';
+import { RoleService } from 'src/role/role.service';
+import { Role } from 'src/role/entities/role.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User, Role]),
     JwtModule.registerAsync({
       useFactory: () => ({
         secret: process.env.JWT_SECRET,
-        signOptions: {
-          expiresIn: process.env.NODE_ENV === 'production' ? '30s' : '',
-        },
       }),
     }),
   ],
-  providers: [AuthService, AuthResolver, UserService, JwtStrategy, RolesGuard],
+  providers: [
+    AuthService,
+    AuthResolver,
+    UserService,
+    JwtStrategy,
+    RolesGuard,
+    RoleService,
+  ],
 })
 export class AuthModule {}

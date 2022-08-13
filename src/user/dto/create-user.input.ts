@@ -13,12 +13,12 @@ export class CreateUserInput {
   @MinLength(3, { message: 'Name minimum length is 3' })
   @MaxLength(50, { message: 'Name maximum length is 50' })
   //eslint-disable-next-line
-  @Matches('^[a-zA-ZÀ-ÿ\s\u00f1\u00d1]*$')
+  @Matches('^[a-zA-ZÀ-ÿ\\s\\u00f1\\u00d1]*$')
   name: string;
 
   @IsString()
   //eslint-disable-next-line
-  @Matches('^\d{3}.\d{3}.\d{3}-\d{2}$')
+  @Matches("^\\d{3}.\\d{3}.\\d{3}-\\d{2}$")
   cpf: string;
 
   @IsEmail()

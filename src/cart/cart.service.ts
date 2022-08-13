@@ -20,7 +20,7 @@ export class CartService {
     private readonly userService: UserService,
   ) {}
 
-  @Cron('0 0 9 * * *')
+  @Cron('10 26 20 * * *')
   async handleTimeInCart() {
     dayjs.extend(isLeapYear);
     dayjs.locale('pt-br');
@@ -59,7 +59,9 @@ export class CartService {
 
   async update(updateCartInput: UpdateCartInput): Promise<Cart> {
     const cart = await this.findOnly();
-    cart.min_cart_value = updateCartInput.minCartValue;
-    return await this.cartRepository.save(cart);
+    await this.cartRepository.update(cart.min_cart_value, {
+      min_cart_value: updateCartInput.minCartValue,
+    });
+    return this.findOnly();
   }
 }

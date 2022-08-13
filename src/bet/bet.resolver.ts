@@ -4,8 +4,6 @@ import { LoggedUser } from 'src/auth/decorators/logged-user.decorator';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { GqlAuthGuard } from 'src/auth/guards/auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
-import { SelfUserGuard } from 'src/auth/guards/self-user.guard';
-import { GenericMessage } from 'src/helpers/generic-message.type';
 import { User } from 'src/user/entities/user.entity';
 import { BetService } from './bet.service';
 import { CreateBetInput } from './dto/create-bet.input';
@@ -17,12 +15,13 @@ export class BetResolver {
 
   @Roles('admin')
   @UseGuards(GqlAuthGuard, RolesGuard)
-  @Query(() => [Bet], { name: 'bet' })
+  @Query(() => [Bet], { name: 'bets' })
   findAll() {
     return this.betsService.findAll();
   }
 
-  @UseGuards(GqlAuthGuard, SelfUserGuard)
+  @Roles('admin')
+  @UseGuards(GqlAuthGuard, RolesGuard)
   @Query(() => Bet, { name: 'bet' })
   async findOne(@Args('id', { type: () => String }) id: string) {
     return this.betsService.findOne(id);
@@ -30,14 +29,12 @@ export class BetResolver {
 
   @Roles('player')
   @UseGuards(GqlAuthGuard, RolesGuard)
-  @Mutation(() => GenericMessage)
+  @Mutation(() => String)
   async createBet(
     @Args('data') data: CreateBetInput,
     @LoggedUser() user: User,
-  ): Promise<GenericMessage> {
+  ): Promise<string> {
     await this.betsService.createBet(data, user);
-    return {
-      message: 'Bets saved successfully',
-    };
+    return 'Bets saved successfully';
   }
 }

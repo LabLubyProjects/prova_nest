@@ -1,0 +1,148 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Game {
+  id: ID!
+  type: String!
+  description: String!
+  range: Float!
+  price: Float!
+  minAndMaxNumber: Float!
+  color: String!
+  created_at: DateTime!
+  updated_at: DateTime!
+  bets: [Bet!]!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Bet {
+  id: ID!
+  numbers: String!
+  user_id: String!
+  game_id: String!
+  created_at: DateTime!
+  updated_at: DateTime!
+  user: User!
+  game: Game!
+}
+
+type User {
+  id: ID!
+  name: String!
+  cpf: String!
+  email: String!
+  created_at: DateTime!
+  updated_at: DateTime!
+  roles: [Role!]!
+  bets: [Bet!]!
+}
+
+type Role {
+  id: ID!
+  name: String!
+  description: String!
+  created_at: DateTime!
+  updated_at: DateTime!
+  users: [User!]!
+}
+
+type Cart {
+  min_cart_value: Float!
+}
+
+type AuthType {
+  user: User!
+  token: String!
+}
+
+type Query {
+  users: [User!]!
+  user(id: String!): User!
+  games: [Game!]!
+  game(id: String!): Game!
+  bets: [Bet!]!
+  bet(id: String!): Bet!
+  cart: Cart!
+}
+
+type Mutation {
+  createUser(data: CreateUserInput!): User!
+  updateUser(data: UpdateUserInput!): User!
+  removeUser(id: String!): User!
+  grantRoles(id: String!, roles: [String!]!): User!
+  createGame(data: CreateGameInput!): Game!
+  updateGame(data: UpdateGameInput!): Game!
+  removeGame(id: String!): Game!
+  createBet(data: CreateBetInput!): String!
+  updateCart(data: UpdateCartInput!): Cart!
+  login(data: AuthInput!): AuthType!
+  forgotPassword(data: RecoverInput!): String!
+  resetPassword(data: ResetInput!): String!
+}
+
+input CreateUserInput {
+  name: String!
+  cpf: String!
+  email: String!
+  password: String!
+}
+
+input UpdateUserInput {
+  name: String
+  cpf: String
+  email: String
+  password: String
+  id: String!
+}
+
+input CreateGameInput {
+  type: String!
+  description: String!
+  range: Float!
+  price: Float!
+  minAndMaxNumber: Float!
+  color: String!
+}
+
+input UpdateGameInput {
+  type: String
+  description: String
+  range: Float
+  price: Float
+  minAndMaxNumber: Float
+  color: String
+  id: String!
+}
+
+input CreateBetInput {
+  bets: [SingleBetInput!]!
+}
+
+input SingleBetInput {
+  gameId: String!
+  numbers: String!
+}
+
+input UpdateCartInput {
+  minCartValue: Float!
+}
+
+input AuthInput {
+  email: String!
+  password: String!
+}
+
+input RecoverInput {
+  email: String!
+}
+
+input ResetInput {
+  email: String!
+  token: String!
+  newPassword: String!
+}

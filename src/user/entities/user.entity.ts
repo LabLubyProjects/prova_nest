@@ -35,11 +35,11 @@ export class User {
   @HideField()
   password: string;
 
-  @Column()
+  @Column({ default: null })
   @HideField()
   password_recovery_token?: string;
 
-  @Column()
+  @Column({ default: null })
   @HideField()
   password_recovery_token_expiration?: Date;
 

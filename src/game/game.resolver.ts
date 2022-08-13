@@ -21,7 +21,7 @@ export class GameResolver {
   }
 
   @UseGuards(GqlAuthGuard)
-  @Query(() => [Game], { name: 'game' })
+  @Query(() => [Game], { name: 'games' })
   findAll() {
     return this.gameService.findAll();
   }

@@ -1,5 +1,4 @@
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
-import { GenericMessage } from 'src/helpers/generic-message.type';
 import { AuthService } from './auth.service';
 import { AuthInput } from './dto/auth.input';
 import { AuthType } from './dto/auth.type';
@@ -19,24 +18,17 @@ export class AuthResolver {
     };
   }
 
-  @Mutation(() => GenericMessage)
+  @Mutation(() => String)
   public async forgotPassword(
     @Args('data') data: RecoverInput,
-  ): Promise<GenericMessage> {
+  ): Promise<string> {
     await this.authService.forgotPassword(data.email);
-    return {
-      message:
-        'Keep your eyes on your email account, we have sent you an recover email',
-    };
+    return 'Keep your eyes on your email account, we have sent you an recover email';
   }
 
-  @Mutation(() => GenericMessage)
-  public async resetPassword(
-    @Args('data') data: ResetInput,
-  ): Promise<GenericMessage> {
+  @Mutation(() => String)
+  public async resetPassword(@Args('data') data: ResetInput): Promise<string> {
     await this.authService.resetPassword(data);
-    return {
-      message: 'Password was reset successfully',
-    };
+    return 'Password was reset successfully';
   }
 }

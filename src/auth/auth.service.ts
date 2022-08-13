@@ -25,9 +25,15 @@ export class AuthService {
   ) {}
 
   async validateUser(data: AuthInput): Promise<AuthType> {
-    const user = await this.userService.findByEmail(data.email);
+    let user: User;
+    try {
+      user = await this.userService.findByEmail(data.email);
+    } catch (error) {
+      throw new UnauthorizedException('Access denied');
+    }
     const validPassword = compareSync(data.password, user.password);
     if (!validPassword) throw new UnauthorizedException('Access denied');
+
     const token = await this.jwtToken(user);
     return {
       user,

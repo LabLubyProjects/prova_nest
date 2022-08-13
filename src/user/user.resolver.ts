@@ -21,9 +21,9 @@ export class UserResolver {
 
   @Roles('admin')
   @UseGuards(GqlAuthGuard, RolesGuard)
-  @Query(() => [User], { name: 'user' })
+  @Query(() => [User], { name: 'users' })
   findAll() {
-    return this.userService.findAll();
+    return this.userService.findAllWithBets();
   }
 
   @UseGuards(GqlAuthGuard)

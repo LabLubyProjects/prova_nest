@@ -1,4 +1,4 @@
-import { ObjectType } from '@nestjs/graphql';
+import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { Game } from 'src/game/entities/game.entity';
 import { User } from 'src/user/entities/user.entity';
 import {
@@ -15,6 +15,7 @@ import {
 @Entity()
 export class Bet {
   @PrimaryGeneratedColumn('uuid')
+  @Field(() => ID)
   id: string;
 
   @Column()
