@@ -8,6 +8,7 @@ import { GqlAuthGuard } from 'src/auth/guards/auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { SelfUserGuard } from 'src/auth/guards/self-user.guard';
+import { PaginateInput } from '../helpers/paginate.input';
 
 @Resolver(() => User)
 export class UserResolver {
@@ -21,9 +22,20 @@ export class UserResolver {
 
   @Roles('admin')
   @UseGuards(GqlAuthGuard, RolesGuard)
+  @Query(() => [User], { name: 'usersWithBets' })
+  findAllWithBets(
+    @Args('pagination', { nullable: true }) pagination: PaginateInput,
+  ): Promise<User[]> {
+    return this.userService.findAllWithBets(pagination);
+  }
+
+  @Roles('admin')
+  @UseGuards(GqlAuthGuard, RolesGuard)
   @Query(() => [User], { name: 'users' })
-  findAll() {
-    return this.userService.findAllWithBets();
+  findAll(
+    @Args('pagination', { nullable: true }) pagination: PaginateInput,
+  ): Promise<User[]> {
+    return this.userService.findAll(pagination);
   }
 
   @UseGuards(GqlAuthGuard)

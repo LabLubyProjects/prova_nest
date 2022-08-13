@@ -6,6 +6,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { CartService } from 'src/cart/cart.service';
 import { GameService } from 'src/game/game.service';
+import { PaginateInput } from 'src/helpers/paginate.input';
 import { produce } from 'src/messaging/kafka';
 import { User } from 'src/user/entities/user.entity';
 import { UserService } from 'src/user/user.service';
@@ -22,7 +23,14 @@ export class BetService {
     private readonly userService: UserService,
   ) {}
 
-  async findAll(): Promise<Bet[]> {
+  async findAll(pagination?: PaginateInput): Promise<Bet[]> {
+    if (pagination) {
+      return this.betsRepository.find({
+        take: pagination.perPage || 10,
+        skip: pagination.page * pagination.perPage || 0,
+      });
+    }
+
     return this.betsRepository.find();
   }
 

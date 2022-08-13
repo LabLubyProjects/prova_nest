@@ -5,6 +5,7 @@ import {
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { PaginateInput } from 'src/helpers/paginate.input';
 import { Repository } from 'typeorm';
 import { CreateGameInput } from './dto/create-game.input';
 import { UpdateGameInput } from './dto/update-game.input';
@@ -31,7 +32,14 @@ export class GameService {
     return newGame;
   }
 
-  findAll(): Promise<Game[]> {
+  async findAll(pagination?: PaginateInput): Promise<Game[]> {
+    if (pagination) {
+      return this.gameRepository.find({
+        take: pagination.perPage || 10,
+        skip: pagination.page * pagination.perPage || 0,
+      });
+    }
+
     return this.gameRepository.find();
   }
 

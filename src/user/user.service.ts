@@ -5,9 +5,11 @@ import {
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { DateTime } from 'luxon';
 import { RoleService } from 'src/role/role.service';
-import { Repository } from 'typeorm';
+import { MoreThan, Repository } from 'typeorm';
 import { CreateUserInput } from './dto/create-user.input';
+import { PaginateInput } from '../helpers/paginate.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { User } from './entities/user.entity';
 
@@ -41,14 +43,41 @@ export class UserService {
     return newUser;
   }
 
-  findAll(): Promise<User[]> {
+  async findAll(pagination?: PaginateInput): Promise<User[]> {
+    if (pagination) {
+      return this.userRepository.find({
+        take: pagination.perPage || 10,
+        skip: pagination.page * pagination.perPage || 0,
+      });
+    }
+
     return this.userRepository.find();
   }
 
-  async findAllWithBets(): Promise<User[]> {
+  async findAllWithBets(pagination?: PaginateInput): Promise<User[]> {
+    if (pagination) {
+      return this.userRepository.find({
+        relations: {
+          bets: true,
+        },
+        where: {
+          bets: {
+            created_at: MoreThan(DateTime.now().minus({ month: 1 }).toJSDate()),
+          },
+        },
+        take: pagination.perPage || 10,
+        skip: pagination.page * pagination.perPage || 0,
+      });
+    }
+
     return this.userRepository.find({
       relations: {
         bets: true,
+      },
+      where: {
+        bets: {
+          created_at: MoreThan(DateTime.now().minus({ month: 1 }).toJSDate()),
+        },
       },
     });
   }

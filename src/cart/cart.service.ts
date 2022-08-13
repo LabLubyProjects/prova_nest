@@ -20,14 +20,14 @@ export class CartService {
     private readonly userService: UserService,
   ) {}
 
-  @Cron('10 26 20 * * *')
+  @Cron('55 32 20 * * *')
   async handleTimeInCart() {
     dayjs.extend(isLeapYear);
     dayjs.locale('pt-br');
 
     const usersWithBets = await this.userService.findAllWithBets();
 
-    await Promise.all(
+    Promise.all(
       usersWithBets.map(async (userWithBet) => {
         if (userWithBet.bets.length === 0) {
           await produce(userWithBet, 'new-bet-new-users');
