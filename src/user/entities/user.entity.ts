@@ -52,7 +52,9 @@ export class User {
   @ManyToMany(() => Role, (role) => role.users, {
     eager: true,
   })
-  @JoinTable()
+  @JoinTable({
+    name: 'users_roles',
+  })
   roles: Role[];
 
   @OneToMany(() => Bet, (bet) => bet.user, {

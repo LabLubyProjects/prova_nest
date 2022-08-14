@@ -4,6 +4,7 @@ import { LoggedUser } from 'src/auth/decorators/logged-user.decorator';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { GqlAuthGuard } from 'src/auth/guards/auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { PaginateInput } from 'src/helpers/paginate.input';
 import { User } from 'src/user/entities/user.entity';
 import { BetService } from './bet.service';
 import { CreateBetInput } from './dto/create-bet.input';
@@ -16,8 +17,8 @@ export class BetResolver {
   @Roles('admin')
   @UseGuards(GqlAuthGuard, RolesGuard)
   @Query(() => [Bet], { name: 'bets' })
-  findAll() {
-    return this.betsService.findAll();
+  findAll(@Args('pagination', { nullable: true }) pagination: PaginateInput) {
+    return this.betsService.findAll(pagination);
   }
 
   @Roles('admin')

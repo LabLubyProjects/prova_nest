@@ -6,7 +6,7 @@ services:
     platform: linux/x86_64
     image: mysql:8
     ports:
-      -${DB_PORT}:3306
+      - "${DB_PORT}:3306"
     restart: always
     environment:
       - MYSQL_ALLOW_EMPTY_PASSWORD=yes
@@ -16,13 +16,14 @@ services:
   api:
     container_name: nest_api
     depends_on:
-      - nest_db
+      - database
     build: .
     ports:
-      -${API_PORT}:${API_PORT}
+      - "${API_PORT}:${API_PORT}"
     volumes:
       - .:/api
     restart: on-failure
+    command: yarn start:dev
     environment:
       - JWT_SECRET=${JWT_SECRET}
       - NODE_ENV=${NODE_ENV}
@@ -30,12 +31,16 @@ services:
       - DB_HOST=nest_db
       - DB_PORT=3306
       - DB_USERNAME=${DB_USERNAME}
-      - DB_PASSWORD=
+      - DB_PASSWORD=${DB_PASSWORD}
       - DB_NAME=${DB_NAME}
       - DB_SYNC=${DB_SYNC}
-      - KAFKA_HOST=kafka
-      - KAFKA_PORT=29092
+      - KAFKA_BROKER=kafka:29092
     links:
-      - nest_db
+      - database
     networks:
       - prova
+
+networks:
+  prova:
+    name: prova
+    external: true
